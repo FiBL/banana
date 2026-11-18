@@ -58,7 +58,8 @@ richness <- specnumber(otu_table(zotu97), MARGIN=2)
 
 shannon <- diversity(otu_table(zotu97), MARGIN= 2)
 
-evenness <- shannon/richness
+#  Sheldon's evenness, E = exp(H)/S.
+evenness <- exp(shannon)/richness
 
 div.index <- data.frame(cbind(richness, shannon, evenness))
 
@@ -174,7 +175,7 @@ shannon_treat_facet
 ggsave(shannon_treat_facet, file= "../04_Figures/Supplemetary_FigureS4AITS.png", width= 1900,height= 1200, units= "px")
 
 
-saveRDS(shannon_treat_facet, file = '../03_Analysis_files/Supplementary_plot/Supplementary_FigureS4AITS.rds')
+saveRDS(shannon_treat_facet, file = '../05_supplementary_figures/Supplementary_FigureS4AITS.rds')
 
 ```
 
@@ -217,10 +218,9 @@ evenness_treat_facet <- sample_table %>% ggplot(aes(x= time, y= evenness, color=
   
 evenness_treat_facet
 
-ggsave(evenness_treat_facet, file= "../04_Figures/Supplemetary_FigureS4BITS.png", width= 1900,height= 1200, units= "px")
+ggsave(evenness_treat_facet, file= "../05_supplementary_figures/Supplemetary_FigureS4BITS.png", width= 1900,height= 1200, units= "px")
 
 
-saveRDS(evenness_treat_facet, file = '../03_Analysis_files/Supplementary_plot/Supplemetary_FigureS4BITS.png')
 
 ```
 
