@@ -17,7 +17,7 @@ library(tidyverse)
 library(DESeq2)
 library(apeglm)
 # library(gridExtra)
-#library(ANCOMBC)
+library(ANCOMBC)   # REVIEW: was commented out, so ancombc2() was not found in a fresh session
 library(microbiome)
 ```
 
@@ -408,10 +408,12 @@ number_selected_ancombc <- sum(res_all_fungi_ancombc$selected!= "no")
 ```
 
 ```{r ancomb volcano}
-volcano_plot_ancombc_ITS <- res_all_fungi_ancombc %>% 
-  ggplot(aes(x = lfc, y = -log10(p_adj), col= selected, )) +
+# REVIEW: ANCOM-BC2 log fold changes are natural logs, but the axis says log2.
+# Divide by log(2) for plotting (same as 04b/04c). Selection is unchanged.
+volcano_plot_ancombc_ITS <- res_all_fungi_ancombc %>%
+  ggplot(aes(x = lfc / log(2), y = -log10(p_adj), col= selected, )) +
   geom_point(size= 3) +
-  geom_vline(xintercept = c(-threshold_ancombc, threshold_ancombc ), linetype = "dashed", color = "gray40") +
+  geom_vline(xintercept = c(-threshold_ancombc, threshold_ancombc) / log(2), linetype = "dashed", color = "gray40") +
   geom_hline(yintercept = -log10(0.05), linetype = "dashed", color = "gray40") +
   theme_classic()+
   theme(strip.placement = "outside")+
