@@ -231,11 +231,11 @@ volcano_plot_deseq <- res_all_fungi_deseq %>%
 
 volcano_plot_deseq
 
-ggsave(volcano_plot_deseq, file= "../04_Figures/FigureX_ITS_deseq.png", width= 1900,height= 1200, units= "px")
+ggsave(volcano_plot_deseq, file= "../05_supplementary_figures/FigureX_ITS_deseq.png", width= 1900,height= 1200, units= "px")
 
 
-saveRDS(volcano_plot_deseq, file = '../03_Analysis_files/FigureX_ITS_deseq.RDa')
-volcano_plot_deseq <- readRDS(file = '../03_Analysis_files/FigureX_ITS_deseq.RDa')
+saveRDS(volcano_plot_deseq, file = '../05_supplementary_figures/FigureX_ITS_deseq.RDa')
+volcano_plot_deseq <- readRDS(file = '../05_supplementary_figures/FigureX_ITS_deseq.RDa')
 
 volcano_plot_deseq$data$treatment <- factor(
   volcano_plot_deseq$data$treatment,
@@ -251,9 +251,9 @@ volcano_plot_deseq <- volcano_plot_deseq+
   labs(title = NULL, subtitle = NULL, caption= NULL)
 
 
-ggsave(volcano_plot_deseq, file= "../04_Figures/FigureX_ITS_deseq_revisado_2.png", width= 1900,height= 1200, units= "px")
+ggsave(volcano_plot_deseq, file= "../05_supplementary_figures/FigureX_ITS_deseq_revisado_2.png", width= 1900,height= 1200, units= "px")
 
-saveRDS(volcano_plot_deseq, file = '../03_Analysis_files/FigureX_ITS_deseq.RDa')
+saveRDS(volcano_plot_deseq, file = '../05_supplementary_figures/FigureX_ITS_deseq.RDa')
 
 ```
 
@@ -444,8 +444,8 @@ volcano_plot_ancombc_ITS <- volcano_plot_ancombc_ITS +
 
 volcano_plot_ancombc_ITS
 
-ggsave(volcano_plot_ancombc_ITS, file= "../04_Figures/FigureXXX_ITS_ancom_revisado_2.png", width= 1900,height= 1200, units= "px")
+ggsave(volcano_plot_ancombc_ITS, file= "../05_supplementary_figures/FigureXXX_ITS_ancom_revisado_2.png", width= 1900,height= 1200, units= "px")
 
 
-saveRDS(volcano_plot_ancombc_ITS, file = '../03_Analysis_files/FigureXXX_ITS.RDa')
+saveRDS(volcano_plot_ancombc_ITS, file = '../05_supplementary_figures/FigureXXX_ITS.RDa')
 ```

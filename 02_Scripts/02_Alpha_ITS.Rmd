@@ -172,7 +172,7 @@ shannon_treat_facet <- sample_table %>% ggplot(aes(x= time, y= shannon, color= t
   
 shannon_treat_facet
 
-ggsave(shannon_treat_facet, file= "../04_Figures/Supplemetary_FigureS4AITS.png", width= 1900,height= 1200, units= "px")
+ggsave(shannon_treat_facet, file= "../05_supplementary_figures/Supplemetary_FigureS4AITS.png", width= 1900,height= 1200, units= "px")
 
 
 saveRDS(shannon_treat_facet, file = '../05_supplementary_figures/Supplementary_FigureS4AITS.rds')

@@ -236,12 +236,12 @@ volcano_plot_deseq <- res_all_bact_deseq %>%
 
 volcano_plot_deseq
 
-ggsave(volcano_plot_deseq, file= "../04_Figures/FigureX_16S.png", width= 1900,height= 1200, units= "px")
+ggsave(volcano_plot_deseq, file= "../05_supplementary_figures/FigureX_16S.png", width= 1900,height= 1200, units= "px")
 
 
-saveRDS(volcano_plot_deseq, file = '../03_Analysis_files/FigureX_16S.RDa')
+saveRDS(volcano_plot_deseq, file = '../05_supplementary_figures/FigureX_16S.RDa')
 
-plot_deseq <- readRDS("../03_Analysis_files/FigureX_16S.RDa")
+plot_deseq <- readRDS("../05_supplementary_figures/FigureX_16S.RDa")
 
 plot_deseq$data$treatment <- factor(
   plot_deseq$data$treatment,
@@ -258,7 +258,7 @@ plot_deseq
 
 
 plot
-ggsave(plot_deseq, file= "../04_Figures/FigureX_16S_revisado_2_deseq.png", width= 1900,height= 1200, units= "px")
+ggsave(plot_deseq, file= "../05_supplementary_figures/FigureX_16S_revisado_2_deseq.png", width= 1900,height= 1200, units= "px")
 ```
 
 ## ANCOMBC
@@ -435,12 +435,12 @@ volcano_plot_ancombc_16S <- res_all_bact_ancombc %>%
 
 volcano_plot_ancombc_16S
 
-ggsave(volcano_plot_ancombc_16S, file= "../04_Figures/FigureXX_16S.png", width= 1900,height= 1200, units= "px")
+ggsave(volcano_plot_ancombc_16S, file= "../05_supplementary_figures/FigureXX_16S.png", width= 1900,height= 1200, units= "px")
 
 
-saveRDS(volcano_plot_ancombc_16S, file = '../03_Analysis_files/FigureXX_16S.RDa')
+saveRDS(volcano_plot_ancombc_16S, file = '../05_supplementary_figures/FigureXX_16S.RDa')
 
-plot2 <- readRDS("../03_Analysis_files/FigureXX_16S.RDa")
+plot2 <- readRDS("../05_supplementary_figures/FigureXX_16S.RDa")
 
 plot2$data$treatment <- factor(
   plot2$data$treatment,   # REVIEW: was `p$data$treatment` (undefined object `p`)
@@ -457,7 +457,7 @@ plot
 
 ###editar grafico 
 
-ancom_16s <- readRDS("../03_Analysis_files/FigureXX_16S.RDa")
+ancom_16s <- readRDS("../05_supplementary_figures/FigureXX_16S.RDa")
 
 ancom_16s$data$treatment <- factor(
   ancom_16s$data$treatment,
@@ -472,5 +472,5 @@ ancom_16s <- ancom_16s +
 
 ancom_16s
 
-ggsave(ancom_16s, file= "../04_Figures/FigureXX_16S_revisado_2_ancom.png", width= 1900,height= 1200, units= "px")
+ggsave(ancom_16s, file= "../05_supplementary_figures/FigureXX_16S_revisado_2_ancom.png", width= 1900,height= 1200, units= "px")
 ```
