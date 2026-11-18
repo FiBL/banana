@@ -140,7 +140,7 @@ fungi_plot <- ggplot(cfu_fungi_join,
   geom_smooth(method = "lm", se = TRUE, color = "black") +
   scale_color_manual(
     values = treat.colors1,
-    breaks = treat.order,
+    breaks = treat.order1,   # REVIEW: was treat.order; cfu_fungi.xlsx codes the control as "control_amf"
     labels = treat.labels,
     name   = "Treatment"
   ) +
@@ -199,18 +199,16 @@ otu_filt_dada <- otu_mat_dada[, keep_otus, drop = FALSE]
 cat("ZOTUs ketp:", ncol(otu_filt_dada), "of", ncol(otu_mat_dada), "\n")
 ##tranformation tss
 
-physeq_total_tss <- transform_sample_counts(zotu97dada, function(x) x / sum(x))
+# REVIEW: was x / sum(x) (a proportion, 0-1), but the axes say "relative abundance (%)".
+physeq_total_tss <- transform_sample_counts(zotu97dada, function(x) x / sum(x) * 100)
 
 tax_df <- as.data.frame(tax_table(physeq_total_tss))
 unique(tax_df$Genus)
 
-hypocreales_df <- tax_df %>% 
-  dplyr::filter(Family == "f__Hypocreaceae")
-
-otus_trichoderma <- setdiff(
-  rownames(hypocreales_df),
-  c("ZOTU2169", "ZOTU1901", "ZOTU1027")
-)
+# REVIEW: previously = all Hypocreaceae minus three hand-picked OTUs (Sphaerostilbella,
+# Hypomyces, Kiflimonium). That kept ZOTU1711, which has NO genus assignment.
+# Select on the genus instead, as stated in the Methods ("Trichoderma at the genus level").
+otus_trichoderma <- rownames(tax_df)[tax_df$Genus %in% "g__Trichoderma"]
 
 otus_trichoderma
 length(otus_trichoderma)
@@ -287,8 +285,14 @@ cfu_trichoderma<-readxl::read_excel("../01_Raw_data/cfu_trichoderma.xlsx")
 physeq_trichoderma
 trichoderma_relativa_total
 
+# REVIEW: BUG FIX. `trichoderma_relativa_total` has one row per OTU x sample (psmelt),
+# so joining it to the 90 CFU values gave 90 x n_OTU rows (990 before this fix): the
+# correlation was computed between the CFU of a sample and EACH Trichoderma OTU
+# separately, with an inflated n. Sum the Trichoderma OTUs per sample first.
 trichoderma_relativa_total2 <- trichoderma_relativa_total %>%
-  dplyr::select(-treatment, -time)
+  group_by(sample_ID) %>%
+  summarise(Abundance = sum(Abundance), .groups = "drop")
+stopifnot(nrow(trichoderma_relativa_total2) == nrow(cfu_trichoderma))
 
 cfu_trichoderma_join <- cfu_trichoderma %>%
   left_join(trichoderma_relativa_total2, by = "sample_ID")

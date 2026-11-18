@@ -30,6 +30,7 @@ time.colors <- c("#BFD3E6", "#9ECAE1", "#6BAED6", "#4292C6", "#2171B5", "#08519C
 
 
 treat.order  <- c("control",  "chicken", "cow","compost", "pellet")
+treat.order1 <- c("control_amf",  "chicken", "cow","compost", "pellet")  # REVIEW: cfu_bacteria.xlsx codes the control as "control_amf"
 treat.labels <- c("Control",  "Chicken\nmanure", "Cow\nmanure","Compost", "Pelletised\ncompost")
 
 treat.colors_ok <- c("Control"  = "darkseagreen" , "Chicken\nmanure"= "royalblue1", "Cow\nmanure" = "red3","Pelletised\ncompost"= "darkorchid1","Compost"="chocolate4")
@@ -156,10 +157,10 @@ actinobacteria_plot <- ggplot(cfu_actino_join,
 actinobacteria_plot
 
 
-ggsave(actinobacteria_plot, file= "../04_Figures/Supplemetary_FigureS7_Actinobacteria.png", width= 1900,height= 1200, units= "px")
+ggsave(actinobacteria_plot, file= "../05_supplementary_figures/Supplemetary_FigureS7_Actinobacteria.png", width= 1900,height= 1200, units= "px")
 
 
-saveRDS(actinobacteria_plot, file = '../03_Analysis_files/Supplementary_plot/Supplemetary_FigureS7_Actinobacteria.rds')
+saveRDS(actinobacteria_plot, file = '../05_supplementary_figures/Supplemetary_FigureS7_Actinobacteria.rds')
 ```
 
 ## Bacteria
@@ -228,7 +229,7 @@ bacteria_plot <- ggplot(cfu_bacteria_join,
   geom_smooth(method = "lm", se = TRUE, color = "black") +
   scale_color_manual(
     values = treat.colors1,
-    breaks = treat.order,
+    breaks = treat.order1,   # REVIEW: was treat.order -> Control missing from the legend
     labels = treat.labels,
     name   = "Treatment"
   ) +
