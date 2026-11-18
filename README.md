@@ -22,6 +22,7 @@ The scripts start from the ZOTU count tables and sample metadata and end with th
 - [Data](#data)
 - [Requirements](#requirements)
 - [How to reproduce the analyses](#how-to-reproduce-the-analyses)
+- [Code review (November 2026)](#code-review-november-2026)
 - [Figures and tables in the manuscript](#figures-and-tables-in-the-manuscript)
 - [Upstream bioinformatics (not in this repository)](#upstream-bioinformatics-not-in-this-repository)
 - [Citation](#citation)
@@ -70,6 +71,7 @@ The soil chemistry, plant and CFU data come from the same experiment, which is d
 ├── 04_Tables/                Supplementary tables written by the scripts (.docx)
 ├── 05_supplementary_figures/ ggplot objects (.rds) for the supplementary figures
 ├── 05_word_documents/        Manuscript and additional files (.docx)
+├── CODE_REVIEW.md            Code review of the scripts (see "Code review" below)
 └── Banana_clean.Rproj        RStudio project file (sets the project root)
 ```
 
@@ -174,6 +176,12 @@ The ANCOM-BC2 models in `04_DAA_*` are the slowest step. Once `04_DAA_*` has bee
    The `.R` scripts switch to `02_Scripts/` themselves, so they can be run with `source()` from the project root or from `02_Scripts/`.
 
 Each script writes its figures to `04_Figures/` (PNG) and the corresponding ggplot objects to `03_Analysis_files/` (main figures) or `05_supplementary_figures/` (most supplementary figures) as `.rds`/`.RDa`, so panels can be restyled without re-running the models. The multi-panel figures in the manuscript were assembled from these panels.
+
+---
+
+## Code review (November 2026)
+
+We performed a code review of the scripts with [Claude Code](https://claude.com/claude-code) (version 2.1.327, model Claude Opus 5.5) in November 2026.
 
 ---
 
