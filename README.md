@@ -67,9 +67,9 @@ The soil chemistry, plant and CFU data come from the same experiment, which is d
 ├── 02_Scripts/               R Markdown / R scripts, numbered in run order
 ├── 03_Analysis_files/        Intermediate results written by the scripts: DESeq2 / ANCOM-BC2
 │                             results, ggplot objects (.rds/.RDa), merged tables (.csv)
-├── 04_Figures/               Figure panels (.png) written by the scripts
+├── 04_Figures/               Main figure panels (.png) written by the scripts
 ├── 04_Tables/                Supplementary tables written by the scripts (.docx)
-├── 05_supplementary_figures/ ggplot objects (.rds) for the supplementary figures
+├── 05_supplementary_figures/ Supplementary figure panels (.png) and their ggplot objects (.rds/.RDa)
 ├── 05_word_documents/        Manuscript and additional files (.docx)
 ├── CODE_REVIEW.md            Code review of the scripts (see "Code review" below)
 └── Banana_clean.Rproj        RStudio project file (sets the project root)
@@ -175,7 +175,7 @@ The ANCOM-BC2 models in `04_DAA_*` are the slowest step. Once `04_DAA_*` has bee
 
    The `.R` scripts switch to `02_Scripts/` themselves, so they can be run with `source()` from the project root or from `02_Scripts/`.
 
-Each script writes its figures to `04_Figures/` (PNG) and the corresponding ggplot objects to `03_Analysis_files/` (main figures) or `05_supplementary_figures/` (most supplementary figures) as `.rds`/`.RDa`, so panels can be restyled without re-running the models. The multi-panel figures in the manuscript were assembled from these panels.
+Main figures are written to `04_Figures/` (PNG), with their ggplot objects in `03_Analysis_files/`. Supplementary figures are written to `05_supplementary_figures/`, both as PNG and as ggplot objects. The ggplot objects are saved as `.rds`/`.RDa`, so panels can be restyled without re-running the models. The multi-panel figures in the manuscript were assembled from these panels.
 
 ---
 
