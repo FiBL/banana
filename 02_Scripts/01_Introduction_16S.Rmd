@@ -114,7 +114,7 @@ p_depth <- ggplot(df_depth, aes(x = rep, y = seq.depth, fill = treatment)) +
   geom_col(width = 0.85, color = "grey80", linewidth = 0.2)+
   facet_grid(time ~ treatment, scales = "free_x", space = "free_x", switch = "y", labeller = labeller(
       treatment = c(
-        "control_amf" = "Control",
+        "control"     = "Control",   # REVIEW: was "control_amf", which does not exist in metadata -> facet label NA
         "chicken"     = "Chicken\nmanure",
         "cow"         = "Cow\nmanure",
         "compost"     = "Compost",
@@ -140,11 +140,11 @@ p_depth <- ggplot(df_depth, aes(x = rep, y = seq.depth, fill = treatment)) +
 
 
 p_depth
-ggsave(p_depth, file= "../04_Figures/SupplementaryFigure1_16S.png", width= 1900,height= 1200, units= "px")
+ggsave(p_depth, file= "../05_supplementary_figures/SupplementaryFigure1_16S.png", width= 1900,height= 1200, units= "px")
 
 
 
-saveRDS(p_depth, file = '../03_Analysis_files/Supplementary_plot/Supplementary1_16S.rds')
+saveRDS(p_depth, file = '../05_supplementary_figures/Supplementary1_16S.rds')
 
 
 ```
@@ -175,10 +175,10 @@ rarefaction_treatment <- rarecurve_meta %>% ggplot(aes(Reads, Species, col= trea
        y= "16S Number of OTUs",
        col= "Treatment")
 
-ggsave(rarefaction_treatment, file= "../04_Figures/SupplementaryFigure2_16S.png", width= 1900,height= 1200, units= "px")
+ggsave(rarefaction_treatment, file= "../05_supplementary_figures/SupplementaryFigure2_16S.png", width= 1900,height= 1200, units= "px")
 
 
-saveRDS(rarefaction_treatment, file = '../03_Analysis_files/Supplementary_plot/Supplementary2_16S.rds')
+saveRDS(rarefaction_treatment, file = '../05_supplementary_figures/Supplementary2_16S.rds')
 ```
 
 ## Taxonomy
@@ -317,9 +317,9 @@ p_phyla_bac <- ggplot(agg2, aes(x = 1, y = Abundance, fill = Taxonomy)) +
 
 p_phyla_bac
 
-ggsave(p_phyla_bac, file= "../04_Figures/SupplementaryFigure3_16S_leyenda.png", width= 2000,height= 1200, units= "px")
+ggsave(p_phyla_bac, file= "../05_supplementary_figures/SupplementaryFigure3_16S_leyenda.png", width= 2000,height= 1200, units= "px")
 
 
-saveRDS(p_phyla_bac, file = '../03_Analysis_files/Supplementary_plot/Supplementary3_16S.rds')
+saveRDS(p_phyla_bac, file = '../05_supplementary_figures/Supplementary3_16S.rds')
 ```
 
