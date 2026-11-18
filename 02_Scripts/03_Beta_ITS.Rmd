@@ -114,6 +114,21 @@ eu_permanova_all <- adonis2(
   by       = "terms",
   permutations = 999
 )
+eu_permanova_all
+
+# REVIEW: with strata = pot, samples are only shuffled WITHIN a pot, so this is not
+# a valid test of `treatment` (a between-pot factor). Shuffle whole pots instead,
+# keeping the 6 time points of a pot together. F and R2 are unchanged; only the
+# treatment p-value can change. (Checked on 2026-11-18: p = 0.001 with both schemes.)
+library(permute)
+ord <- order(meta$treat.pot, meta$time)
+h_pots <- how(plots  = Plots(strata = meta$treat.pot[ord], type = "free"),
+              within = Within(type = "none"), nperm = 999)
+set.seed(123)
+eu_permanova_treatment <- adonis2(
+  vegdist(otu_clr[rownames(meta)[ord], ], method = "euclidean") ~ treatment * time,
+  data = meta[ord, ], by = "terms", permutations = h_pots)
+eu_permanova_treatment   # use the `treatment` row of this table
 
 meta$sample_id <- rownames(meta)
 plot_df_clr <- left_join(scores_clr, meta, by = "sample_id")
@@ -157,10 +172,10 @@ theme(text = element_text(size = 12))
 
 p_pca_clr
 
-ggsave(p_pca_clr, file= "../04_Figures/Supplemetary_FigureS5_ITS.png", width= 1900,height= 1200, units= "px")
+ggsave(p_pca_clr, file= "../05_supplementary_figures/Supplemetary_FigureS5_ITS.png", width= 1900,height= 1200, units= "px")
 
 
-saveRDS(p_pca_clr, file = '../03_Analysis_files/Supplementary_plot/Supplemetary_FigureS5_ITS.rds')
+saveRDS(p_pca_clr, file = '../05_supplementary_figures/Supplemetary_FigureS5_ITS.rds')
 
 ```
 
@@ -169,13 +184,16 @@ saveRDS(p_pca_clr, file = '../03_Analysis_files/Supplementary_plot/Supplemetary_
 ```{r}
 #load data
 soil_data<- readxl::read_excel("../01_Raw_data/metadata_2025_soil.xlsx")
+stopifnot(identical(soil_data$sample_id, rownames(otu_clr)))  # REVIEW: rda() pairs rows by position
 #normalizada con clr
-otu_clr 
+otu_clr
 
 #no selectec cfu, ni respiration
+# REVIEW: `org.matter` and `ph.water` do not exist in metadata_2025_soil.xlsx (the
+# columns are now called OOM and pH, as in 03_Beta_16S), so select() stopped here.
 env_data <- soil_data %>%
-  dplyr::select(org.matter, phosphorus, MOT,
-         calcium, magnesium, sodium, potassium, ph.water,
+  dplyr::select(OOM, phosphorus, MOT,
+         calcium, magnesium, sodium, potassium, pH,
          pH.chloride, conductivity, nitrogen)
 
 rda_full <- rda(otu_clr ~ ., data = env_data)
@@ -196,7 +214,7 @@ rda_step <- ordiR2step(rda_null,
                        scope = formula(rda_reduced),
                        direction = "forward", 
                        R2scope = TRUE,
-                       pstep = 999) 
+                       permutations = how(nperm = 999)) # REVIEW: was `pstep = 999`, which ordiR2step() ignores (default = 499)
 
 
 step_df <- as.data.frame(rda_step$anova)
@@ -300,25 +318,22 @@ rda_alldata <- ggplot(sites, aes(x = RDA1, y = RDA2,
 
 
 rda_alldata
-ggsave(rda_alldata, file= "../04_Figures/Figure_2_ITS.png", width= 2200,height= 1800, units= "px")
+ggsave(rda_alldata, file= "../05_supplementary_figures/Figure_2_ITS.png", width= 2200,height= 1800, units= "px")
 
 
 saveRDS(rda_alldata, file = '../03_Analysis_files/Figure_2_ITS.rds')
 
 
-p<-Figure_2_ITS
-p$layers[[5]]$data$var <- dplyr::recode(
-  p$layers[[5]]$data$var,
-  "org.matter" = "OOM",
-  "ph.water" = "pH"
-)
+# REVIEW: was `p <- Figure_2_ITS` (undefined object) followed by a recode of
+# "org.matter"/"ph.water" to "OOM"/"pH"; the variables now already carry those names.
+p <- rda_alldata
 p <- p +
   theme(
     axis.title = element_text(size = 14),  # títulos: RDA1, RDA2
     axis.text  = element_text(size = 14)   # números del eje
   )
 p
-ggsave(p, file= "../04_Figures/Figure_2_ITS_1.png", width= 2200,height= 1800, units= "px")
+ggsave(p, file= "../05_supplementary_figures/Figure_2_ITS_1.png", width= 2200,height= 1800, units= "px")
 
 ```
 
@@ -343,6 +358,11 @@ plant_T5 <- plant_data %>%
 
 # check
 stopifnot(!any(is.na(plant_T5$sample_id)))
+# REVIEW: BUG FIX. plant_data.xlsx is sorted alphabetically by treatment, otu_clr_T5
+# follows the metadata order; rda() pairs rows by position, so communities were
+# paired with the plant data of another treatment. Reorder to match:
+plant_T5 <- plant_T5[match(samples_T5, plant_T5$sample_id), ]
+stopifnot(identical(plant_T5$sample_id, samples_T5))
 
 env_data_plant <- plant_T5%>%
   dplyr::select(pseudostem, heigh, root_length, root_kg, leaves, area_foliar_m2, nitrogen, phosphorus, calcium , magnesium, sodium , potassium, iron)
@@ -429,10 +449,10 @@ rda_alldata_plant <- ggplot(sites_plant, aes(x = RDA1, y = RDA2,
   )
 
 rda_alldata_plant
-ggsave(rda_alldata_plant, file= "../04_Figures/Supplemetary_FigureS6_ITS.png", width= 2200,height= 1800, units= "px")
+ggsave(rda_alldata_plant, file= "../05_supplementary_figures/Supplemetary_FigureS6_ITS.png", width= 2200,height= 1800, units= "px")
 
 
-saveRDS(rda_alldata_plant, file = '../03_Analysis_files//Supplementary_plot/Supplemetary_FigureS6_ITS.rds')
+saveRDS(rda_alldata_plant, file = '../05_supplementary_figures/Supplemetary_FigureS6_ITS.rds')
 
 
 ```
