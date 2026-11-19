@@ -47,6 +47,16 @@ metadata$treat.pot <- paste(metadata$treatment, metadata$rep, sep= "_")
 
 zotu97 <- merge_phyloseq(zotu97, sample_data(metadata))
 
+# REVIEW: ITS taxonomy = DADA2 (UNITE), as in the Trichoderma section below and in
+# 04_DAA_ITS. The SINTAX taxonomy of the count table is replaced here, so the
+# Ascomycota relative abundance (Fig. 4B) uses DADA2. The UNITE prefixes
+# ("p__Ascomycota") are removed so that Phylum == "Ascomycota" below still matches.
+# (The Trichoderma section re-imports the data and keeps its own DADA2 table.)
+taxonomy_ITS_dada2 <- readRDS("../01_Raw_data/dada2_taxonomy/taxonomy_ITS_dada2.RDa")
+stopifnot(all(taxa_names(zotu97) %in% rownames(taxonomy_ITS_dada2)))
+tax_its <- taxonomy_ITS_dada2[taxa_names(zotu97), , drop = FALSE]
+tax_its[] <- sub("^[a-z]__", "", tax_its)
+tax_table(zotu97) <- tax_table(tax_its)
 
 
 ##modifiyin the table to change rowxcol

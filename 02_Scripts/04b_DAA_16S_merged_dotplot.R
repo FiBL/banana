@@ -132,9 +132,12 @@ contrast_levels <- c("chicken", "cow", "compost", "pellet")
 contrast_labels <- c(chicken = "Chicken", cow = "Cow",
                      compost = "Compost",       pellet = "Pellet")
 
-# Phylum colours: the same palette used for the taxonomy barplot (plotColorBarplot_16S).
-# "Chloroflexota" (the name in the dada2 taxonomy) shares the colour of
-# "Chloroflexi", and "Unclassified" (OTUs with no phylum) uses the "Unassigned" grey.
+# Phylum colours: the same palette used for the taxonomy barplot (01_Introduction_16S).
+# The SINTAX phylum names are renamed as in that barplot (see step 7c), so
+# Proteobacteria -> Pseudomonadota, Firmicutes -> Bacillota and
+# Actinobacteriota -> Actinomycetota. "Chloroflexi" is kept, as in the barplot
+# ("Chloroflexota" is kept in the palette in case it ever appears), and
+# "Unassigned" = OTUs with no phylum, as in the barplot.
 phylum_colours <- c(
   "Cyanobacteria"     = "#8DD3C7",
   "Actinomycetota"    = "#B2D8EE",
@@ -148,7 +151,12 @@ phylum_colours <- c(
   "Chloroflexi"       = "#A34022",
   "Chloroflexota"     = "#A34022",
   "Verrucomicrobiota" = "#7C4D79",
-  "Unclassified"      = "gray30"
+  # REVIEW: not in the barplot palette (< 2 %), but differentially abundant here.
+  # Fixed colours, distinct from the 16S and ITS barplot palettes (the automatic
+  # fallback gave Deinococcota the "Less than 2%" yellow).
+  "Deinococcota"      = "#BC80BD",
+  "Bdellovibrionota"  = "#1B9E77",
+  "Unassigned"        = "gray30"
 )
 # Phyla in the figure that are NOT in the palette above get one of these, in
 # order (the first is the "Less than 2%" colour of the barplot). A message
@@ -318,10 +326,35 @@ counts_long <- otu_mat %>%
 sample_df <- data.frame(sample_data(zotu97)) %>%
   rownames_to_column("sample")
 
-# 7c. Taxonomy (dada2 assignment loaded in the Rmd) + the lowest assigned rank.
+# 7c. Taxonomy (SINTAX / SILVA 138, from the count table) + the lowest assigned rank.
+# The SINTAX names need some cleaning before they can be used as labels:
+#   * placeholders that are not a taxon ("uncultured", "uncultured_bacterium",
+#     "metagenome", "unidentified_...") and values that are only a number
+#     ("0.9900", a confidence value) or start with "_" ("_clade") become NA, so the
+#     OTU falls back to its lowest REAL assigned rank (otherwise e.g. all
+#     "uncultured" families would be drawn as one family row);
+#   * trailing "_" is removed (e.g. "Acidobacteriaceae_");
+#   * species are given as "Genus_species": "_" becomes a space, and "Genus_sp."
+#     (no species assigned) becomes NA;
+#   * phylum names are renamed as in the barplot of 01_Introduction_16S.
+is_placeholder <- function(x) {
+  grepl("^(uncultured|metagenome|unidentified)", x, ignore.case = TRUE) |
+    grepl("^[0-9.]+$", x) | grepl("^_", x)
+}
 tax_df <- as(tax_table(zotu97), "matrix") %>%
   as.data.frame() %>%
   rownames_to_column("OTU") %>%
+  mutate(across(-OTU, ~ sub("_+$", "", .x)),
+         across(-OTU, ~ if_else(is_placeholder(.x), NA_character_, .x)),
+         Species = gsub("_", " ", Species),
+         Species = if_else(grepl(" sp\\.?$", Species), NA_character_, Species),
+         # SILVA "species" in lower case are descriptions, not names
+         # ("anaerobic digester", "alpha proteobacterium") -> unassigned
+         Species = if_else(grepl("^[a-z]", Species), NA_character_, Species),
+         Phylum  = recode(Phylum,
+                          "Proteobacteria"   = "Pseudomonadota",
+                          "Firmicutes"       = "Bacillota",
+                          "Actinobacteriota" = "Actinomycetota")) %>%
   mutate(lowest_rank = coalesce(Species, Genus, Family, Order, Class, Phylum, Kingdom))
 
 
@@ -419,7 +452,7 @@ points_all <- bind_rows(
   mutate(
     method   = factor(method, levels = c("DESeq2", "ANCOM-BC2")),
     contrast = factor(contrast, levels = contrast_levels),
-    Phylum   = coalesce(Phylum, "Unclassified"),
+    Phylum   = coalesce(Phylum, "Unassigned"),
     # Row label = family. OTUs without a family get "<lowest assigned rank>
     # (unclass.)", e.g. "Rhizobiales (unclass.)", instead of being lumped together.
     taxon_label = coalesce(Family, paste0(lowest_rank, " (unclass.)")),

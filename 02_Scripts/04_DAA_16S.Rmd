@@ -49,10 +49,10 @@ metadata$treat.pot <- paste(metadata$treatment, metadata$rep, sep= "_")
 
 zotu97 <- merge_phyloseq(zotu97, sample_data(metadata))
 
-
-taxonomy_16S_dada2 <- readRDS("../01_Raw_data/dada2_taxonomy/taxonomy_16S_dada2.RDa")
-
-tax_table(zotu97) <- tax_table(taxonomy_16S_dada2)
+# REVIEW: 16S taxonomy = SINTAX (SILVA 138), as in all other 16S scripts. The DADA2
+# 16S taxonomy (taxonomy_16S_dada2.RDa) used to replace it here; it is no longer used.
+# The DAA models are fitted per OTU, so this only changes the taxonomy labels
+# (Fig. 3, Table S7), not the DESeq2 / ANCOM-BC2 results.
 ```
 
 ## Data Filtering

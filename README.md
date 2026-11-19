@@ -109,12 +109,14 @@ Raw PacBio reads are deposited in the NCBI Sequence Read Archive under BioProjec
 | `metadata_2025_soil.xlsx` | Soil chemistry per sample (pH, EC, TOM, OOM, N, P, Ca, Mg, Na, K) |
 | `plant_data.xlsx` | Plant biometric and nutrient data at final harvest (T5) |
 | `cfu_bacteria.xlsx`, `cfu_actinobacteria.xlsx`, `cfu_fungi.xlsx`, `cfu_trichoderma.xlsx` | Culture-dependent counts (CFU g⁻¹ soil) |
-| `dada2_taxonomy/taxonomy_ITS_dada2.RDa` | DADA2 taxonomy of the ITS ZOTUs (UNITE), used by `04_DAA_ITS` and `05_Correlations_ITS` |
-| `dada2_taxonomy/taxonomy_16S_dada2.RDa` | DADA2 taxonomy of the 16S ZOTUs, used by `04_DAA_16S` |
+| `dada2_taxonomy/taxonomy_ITS_dada2.RDa` | DADA2 taxonomy of the ITS ZOTUs (UNITE), used by `01_Introduction_ITS`, `04_DAA_ITS` and `05_Correlations_ITS` |
+| `dada2_taxonomy/taxonomy_16S_dada2.RDa` | DADA2 taxonomy of the 16S ZOTUs. Not used by the analyses (16S taxonomy is SINTAX, see below) |
 | `dada2_taxonomy/Tax_Assign_ITS_DADA2.Rmd` | Script that creates the ITS taxonomy table with DADA2 `assignTaxonomy()` |
 | `dada2_taxonomy/sh_general_release_dynamic_19.02.2025.fasta` | UNITE reference database used by the script above |
 
 The taxonomy tables are precomputed and included in the repository, so the analysis scripts do not need to re-run the taxonomy assignment.
+
+**Which taxonomy is used:** all 16S outputs use the SINTAX taxonomy (SILVA 138) of the 16S count table, and all ITS outputs use the DADA2 taxonomy (UNITE) in `taxonomy_ITS_dada2.RDa`. The SINTAX taxonomy in the ITS count table is not used.
 
 ---
 

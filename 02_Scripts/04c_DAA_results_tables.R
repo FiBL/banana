@@ -69,13 +69,25 @@ build_table <- function(tag) {
   daa %>%
     mutate(
       # lowest assigned taxon and its rank (species shown as "Genus species")
-      tax_rank = case_when(!is.na(Species) ~ "Species", !is.na(Genus) ~ "Genus",
-                        !is.na(Family)  ~ "Family",  !is.na(Order) ~ "Order",
-                        !is.na(Class)   ~ "Class",   TRUE ~ "Phylum"),
-      tax_name = case_when(tax_rank == "Species" & !is.na(Genus) ~ paste(Genus, Species),
-                        TRUE ~ as.character(lowest_rank)),
+      # REVIEW: SILVA copies a name down to the lower ranks when they are unnamed
+      # (Genus = Family = "Longimicrobiaceae"), so the rank is the HIGHEST rank that
+      # holds the lowest name. An OTU with no phylum is named at Kingdom ("Bacteria").
+      tax_rank = case_when(!is.na(Species) ~ "Species",
+                           (lowest_rank == Class)  %in% TRUE ~ "Class",   # %in% TRUE: NA -> FALSE
+                           (lowest_rank == Order)  %in% TRUE ~ "Order",
+                           (lowest_rank == Family) %in% TRUE ~ "Family",
+                           (lowest_rank == Genus)  %in% TRUE ~ "Genus",
+                           (lowest_rank == Phylum) %in% TRUE ~ "Phylum",
+                           TRUE ~ "Kingdom"),
+      # ITS (UNITE) species hold only the epithet ("fumigatus"): add the genus.
+      # 16S (SINTAX) species are already binomials ("Bacillus funiculus"): keep them
+      # as they are, even when SINTAX gives another genus at the Genus rank.
+      tax_name = case_when(tax_rank == "Species" & !is.na(Genus) & !grepl(" ", Species)
+                             ~ paste(Genus, Species),
+                           tax_rank == "Species" ~ Species,
+                           TRUE ~ as.character(lowest_rank)),
       is_species = tax_rank == "Species",
-      Phylum     = coalesce(Phylum, "Unclassified"),
+      Phylum     = coalesce(Phylum, "Unassigned"),
       otu_num    = as.integer(str_extract(OTU, "\\d+")),
       treat_i    = match(contrast, treat_order)
     ) %>%

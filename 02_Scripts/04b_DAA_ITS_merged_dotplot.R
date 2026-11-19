@@ -139,9 +139,11 @@ phylum_colours <- c(
   "Basidiomycota" = "#F7C4B4",
   "Glomeromycota" = "#B0E0F4",
   "Mucoromycota"  = "#D7C9E8",
+  "Chytridiomycota" = "#F2A7C3",
+  "Kickxellomycota" = "#E5C29F",
   "Unassigned"    = "gray30"
 )
-# Other phyla in the figure (e.g. Chytridiomycota, Mortierellomycota, ...) are not
+# Other phyla in the figure (e.g. Rozellomycota, Zoopagomycota, ...) are not
 # in the palette above and get one of these colours, in order of frequency (the
 # first is the "Less than 2%" colour of the barplot). A message lists which
 # phyla used a fallback. Add colours here if there are more phyla than colours.
@@ -318,6 +320,8 @@ tax_df <- as(tax_table(zotu97), "matrix") %>%
   as.data.frame() %>%
   rownames_to_column("OTU") %>%
   mutate(across(-OTU, ~ na_if(sub("^[a-z]__", "", .x), ""))) %>%
+  # REVIEW: same phylum name as the barplot of 01_Introduction_ITS
+  mutate(Phylum = recode(Phylum, "Mortierellomycota" = "Mucoromycota")) %>%
   mutate(lowest_rank = coalesce(Species, Genus, Family, Order, Class, Phylum, Kingdom))
 
 

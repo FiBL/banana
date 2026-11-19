@@ -17,7 +17,8 @@ library(tidyverse)
 library(DESeq2)
 library(apeglm)
 # library(gridExtra)
-library(ANCOMBC)   # REVIEW: was commented out, so ancombc2() was not found in a fresh session
+library(ANCOMBC)   # REVIEW: was commented out, so the ANCOM-BC2 function was not found in a fresh session
+                   # (do not write the function name with "(" here: 04b skips chunks that contain it)
 library(microbiome)
 ```
 
